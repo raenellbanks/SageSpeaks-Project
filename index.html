@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SageSpeaks</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;700&family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1 class="project-title">SageSpeaks</h1>
+      <div class="toggle-container">
+        <label class="switch">
+          <input
+            type="checkbox"
+            id="modeToggle"
+            aria-label="Toggle Light or Dark Mode"
+          />
+          <span class="slider round"></span>
+        </label>
+      </div>
+      <nav>
+        <button class="tab-button active" data-tab="flowers">Flowers</button>
+        <button class="tab-button" data-tab="remember">Remember</button>
+        <button class="tab-button" data-tab="powerinwords">
+          Power in Words
+        </button>
+        <button class="tab-button" data-tab="whatyoushoulddo">
+          What YOU Should Do...
+        </button>
+      </nav>
+    </header>
+
+    <main id="content">
+      <div id="cards-container">Loading...</div>
+    </main>
+
+    <audio id="backgroundMusic" loop></audio>
+
+    <script src="script.js"></script>
+  </body>
+</html>

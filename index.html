@@ -3,44 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SageSpeaks</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;700&family=Pacifico&display=swap"
-      rel="stylesheet"
-    />
+    <title>SageSpeak</title>
     <link rel="stylesheet" href="style.css" />
+    <script defer src="script.js"></script>
   </head>
-  <body>
-    <header>
-      <h1 class="project-title">SageSpeaks</h1>
-      <div class="toggle-container">
-        <label class="switch">
-          <input
-            type="checkbox"
-            id="modeToggle"
-            aria-label="Toggle Light or Dark Mode"
-          />
-          <span class="slider round"></span>
-        </label>
-      </div>
-      <nav>
-        <button class="tab-button active" data-tab="flowers">Flowers</button>
-        <button class="tab-button" data-tab="remember">Remember</button>
-        <button class="tab-button" data-tab="powerinwords">
-          Power in Words
-        </button>
-        <button class="tab-button" data-tab="whatyoushoulddo">
-          What YOU Should Do...
-        </button>
-      </nav>
-    </header>
+  <body class="dark-mode">
+    <!-- === Light/Dark Mode Toggle === -->
+    <button id="mode-toggle">Toggle Mode</button>
 
-    <main id="content">
-      <div id="cards-container">Loading...</div>
-    </main>
+    <!-- === Title === -->
+    <h1>SageSpeak</h1>
 
-    <audio id="backgroundMusic" loop></audio>
+    <!-- === Tabs Navigation === -->
+    <div class="tab-buttons">
+      <button onclick="showTab('flowers')">Flowers</button>
+      <button onclick="showTab('remember')">Remember</button>
+      <button onclick="showTab('power')">Power in Words</button>
+      <button onclick="showTab('action')">What YOU Should Do…</button>
+    </div>
 
-    <script src="script.js"></script>
+    <!-- === Tab Containers === -->
+    <div id="flowers" class="tab-content"></div>
+    <div id="remember" class="tab-content"></div>
+    <div id="power" class="tab-content"></div>
+    <div id="action" class="tab-content"></div>
   </body>
 </html>

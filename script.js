@@ -1,136 +1,86 @@
-console.log("🔥 script.js loaded");
-
-const API_URL =
+const apiURL =
   "https://api.sheetbest.com/sheets/0c00771a-af18-4ce6-8ba7-8f5c7d01f002";
-const content = document.getElementById("content");
-const tabs = document.querySelectorAll(".tab-button");
-const backgroundMusic = document.getElementById("backgroundMusic");
-const modeToggle = document.getElementById("modeToggle");
 
-let allData = {};
-
-window.addEventListener("DOMContentLoaded", () => {
-  fetch(API_URL)
-    .then((res) => res.json())
-    .then((data) => {
-      allData = categorizeData(data);
-      renderSection("flowers");
-    })
-    .catch((err) => console.error("Error fetching data:", err));
-
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      const activeTab = document.querySelector(".tab-button.active");
-      if (activeTab) activeTab.classList.remove("active");
-      tab.classList.add("active");
-      renderSection(tab.dataset.tab);
-    });
-  });
-
-  modeToggle.addEventListener("change", () => {
-    document.body.classList.toggle("dark-mode", modeToggle.checked);
-  });
-});
-
-function categorizeData(data) {
-  const result = {
-    flowers: [],
-    remember: [],
-    powerinwords: [],
-    whatyoushoulddo: [],
-  };
-
-  data.forEach((entry) => {
-    if (entry.name) result.flowers.push(entry);
-    else if (entry.topic) result.remember.push(entry);
-    else if (entry.affirmation_text) result.powerinwords.push(entry);
-    else if (entry.scenario_title) result.whatyoushoulddo.push(entry);
-  });
-
-  return result;
-}
-
-function renderSection(section) {
-  content.innerHTML = "";
-
-  const sectionData = allData[section] || [];
-
-  sectionData.forEach((item) => {
-    const card = document.createElement("div");
-    card.className = "info-card";
-
-    let html = "";
-
-    switch (section) {
-      case "flowers":
-        html = `
-          <h2>${item.name}</h2>
-          <img src="${item.image_url}" alt="${item.name}" class="avatar"/>
-          <p><strong>Bio:</strong> ${item.short_bio}</p>
-          <p><strong>Contribution:</strong> ${item.contribution}</p>
-          <p><strong>Legacy Quote:</strong> "${item.legacy_quote}"</p>
-          <button onclick="playAudio('${item.audio_url}', 'assets/audio/default_background_music.mp3')">Play</button>
-        `;
-        break;
-
-      case "remember":
-        html = `
-          <h2>${item.topic}</h2>
-          <img src="${item.image_url}" alt="${item.topic}" class="avatar"/>
-          <p>${item.fact_summary}</p>
-          <p><em>"${item.lesson_quote}"</em></p>
-          <button onclick="playAudio('${item.audio_url}', '${item.background_music}')">Play</button>
-        `;
-        break;
-
-      case "powerinwords":
-        html = `
-          <img src="${item.image_url}" alt="Affirmation Visual" class="avatar"/>
-          <p class="affirmation-text">"${item.affirmation_text}"</p>
-          <button onclick="playAudio('${item.audio_url}', '${item.background_music}')">Play</button>
-        `;
-        break;
-
-      case "whatyoushoulddo":
-        html = `
-          <h2>${item.scenario_title}</h2>
-          <img src="${item.image_url}" alt="Scenario" class="avatar"/>
-          <p>${item.scenario_description}</p>
-          <p class="sage-response">${escapeHTML(item.sage_response)}</p>
-          <button onclick="playAudio('${item.audio_url}', '${
-          item.background_music
-        }')">Play</button>
-        `;
-        break;
-
-      default:
-        html = "<p>No data available for this section.</p>";
-    }
-
-    card.innerHTML = html;
-    content.appendChild(card);
-  });
-}
-
-function escapeHTML(str) {
-  if (!str) return "";
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-function playAudio(audioUrl, bgMusicUrl) {
+// Function to fetch data from SheetBest API
+async function fetchData() {
   try {
-    if (backgroundMusic.src !== bgMusicUrl) {
-      backgroundMusic.src = bgMusicUrl;
-      backgroundMusic.play();
-    }
-    const audio = new Audio(audioUrl);
-    audio.play();
+    const response = await fetch(apiURL);
+    const data = await response.json();
+    console.log("Data loaded:", data);
+    renderTabs(data);
   } catch (error) {
-    console.error("Audio playback error:", error);
+    console.error("Failed to fetch data:", error);
   }
 }
+
+// Function to safely escape HTML
+function escapeHTML(str) {
+  if (!str) return "";
+  return str.replace(
+    /[&<>'"]/g,
+    (tag) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "'": "&#39;",
+        '"': "&quot;",
+      }[tag])
+  );
+}
+
+// Function to render content into tabs based on 'tab' value
+function renderTabs(data) {
+  const sections = {
+    Flowers: document.getElementById("flowers"),
+    Remember: document.getElementById("remember"),
+    "Power in Words": document.getElementById("power"),
+    "What YOU Should Do...": document.getElementById("action"),
+  };
+
+  data.forEach((item) => {
+    const tab = item.tab;
+    const container = sections[tab];
+    if (!container) return;
+
+    const card = document.createElement("div");
+    card.className = "sage-card";
+
+    card.innerHTML = `
+      <h3>${escapeHTML(item.name || item.scenario_title)}</h3>
+      <img src="${item.image_url}" class="avatar" alt="image for ${
+      item.name || tab
+    }" />
+      <p>${escapeHTML(item.short_bio || item.scenario_description)}</p>
+      <p class="sage-response">${escapeHTML(
+        item.legacy_quote || item.sage_response
+      )}</p>
+      <button onclick="playAudio('${item.audio_url}', '${
+      item.background_music
+    }')">Play</button>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+// Function to play audio with optional background music
+function playAudio(voiceURL, bgMusicURL) {
+  const voice = new Audio(voiceURL);
+  const bgMusic = bgMusicURL ? new Audio(bgMusicURL) : null;
+
+  if (bgMusic) {
+    bgMusic.volume = 0.3;
+    bgMusic.loop = true;
+    bgMusic.play();
+  }
+
+  voice.play();
+
+  voice.onended = () => {
+    if (bgMusic) bgMusic.pause();
+  };
+}
+
+// Kick off the data load
+document.addEventListener("DOMContentLoaded", fetchData);

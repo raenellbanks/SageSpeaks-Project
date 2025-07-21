@@ -2,31 +2,110 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SageSpeak</title>
-    <link rel="stylesheet" href="style.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="mode-toggle">
-      <button onclick="toggleMode()">🌓 Toggle Mode</button>
-    </div>
+    <div class="beads-container" id="beads"></div>
 
-    <h1 class="title">SageSpeak</h1>
+    <header>
+      <h1 id="title">SageSpeak</h1>
+      <label class="switch" for="themeToggle">
+        <input
+          type="checkbox"
+          id="themeToggle"
+          aria-label="Toggle light and dark mode"
+        />
+        <span class="slider round"></span>
+      </label>
+    </header>
 
-    <div class="tabs">
-      <button onclick="changeTab('flowers')">🌸 Flowers</button>
-      <button onclick="changeTab('remember')">🧠 Remember</button>
-      <button onclick="changeTab('powerinwords')">💬 Power in Words</button>
-      <button onclick="changeTab('whatyoushoulddo')">
-        ✨ What YOU Should Do...
-      </button>
-    </div>
+    <!-- Tabs with ARIA roles -->
+    <nav class="tabs" aria-label="SageSpeak Sections">
+      <div role="tablist">
+        <button
+          role="tab"
+          aria-selected="true"
+          aria-controls="panel-flowers"
+          id="tab-flowers"
+          tabindex="0"
+          onclick="switchTab(event, 'flowers')"
+        >
+          Flowers
+        </button>
+        <button
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-remember"
+          id="tab-remember"
+          tabindex="-1"
+          onclick="switchTab(event, 'remember')"
+        >
+          Remember
+        </button>
+        <button
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-powerinwords"
+          id="tab-powerinwords"
+          tabindex="-1"
+          onclick="switchTab(event, 'powerinwords')"
+        >
+          Power in Words
+        </button>
+        <button
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-whatyoushoulddo"
+          id="tab-whatyoushoulddo"
+          tabindex="-1"
+          onclick="switchTab(event, 'whatyoushoulddo')"
+        >
+          What YOU Should Do...
+        </button>
+      </div>
+    </nav>
 
-    <div id="content" class="content"></div>
+    <!-- Tab panels -->
+    <main>
+      <section id="panel-flowers" role="tabpanel" aria-labelledby="tab-flowers">
+        <!-- Content for Flowers dynamically injected here -->
+      </section>
+
+      <section
+        id="panel-remember"
+        role="tabpanel"
+        aria-labelledby="tab-remember"
+        hidden
+      >
+        <!-- Content for Remember dynamically injected here -->
+      </section>
+
+      <section
+        id="panel-powerinwords"
+        role="tabpanel"
+        aria-labelledby="tab-powerinwords"
+        hidden
+      >
+        <!-- Content for Power in Words dynamically injected here -->
+      </section>
+
+      <section
+        id="panel-whatyoushoulddo"
+        role="tabpanel"
+        aria-labelledby="tab-whatyoushoulddo"
+        hidden
+      >
+        <!-- Content for What YOU Should Do dynamically injected here -->
+      </section>
+    </main>
+
+    <!-- Audio players hidden -->
 
     <script src="script.js"></script>
   </body>
